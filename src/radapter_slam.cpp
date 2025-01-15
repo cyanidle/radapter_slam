@@ -1,4 +1,6 @@
 #include "radapter/radapter.hpp"
+#include "common.hpp"
+
 
 using namespace radapter;
 
@@ -20,5 +22,4 @@ public:
 
 
 RADAPTER_PLUGIN(RadapterSlam, "radapter.plugins.Slam")
-
 #include "radapter_slam.moc"

@@ -1,0 +1,33 @@
+diff --git a/sdk/src/arch/linux/net_serial.cpp b/sdk/src/arch/linux/net_serial.cpp
+index 2bec556..d3bd556 100644
+--- a/sdk/src/arch/linux/net_serial.cpp
++++ b/sdk/src/arch/linux/net_serial.cpp
+@@ -424,7 +424,7 @@ void raw_serial::cancelOperation()
+     _operation_aborted = true;
+     if (_selfpipe[1] == -1) return;
+ 
+-    (int)::write(_selfpipe[1], "x", 1);
++    (void)::write(_selfpipe[1], "x", 1);
+ }
+ 
+ _u32 raw_serial::getTermBaudBitmap(_u32 baud)
+diff --git a/sdk/src/sl_async_transceiver.cpp b/sdk/src/sl_async_transceiver.cpp
+index c8033a5..c36f2aa 100644
+--- a/sdk/src/sl_async_transceiver.cpp
++++ b/sdk/src/sl_async_transceiver.cpp
+@@ -201,7 +201,7 @@ u_result AsyncTransceiver::openChannelAndBind(IChannel* channel)
+ 		rp::hal::AutoLocker l(_opLocker);
+ 
+         // try to open the channel ...
+-        Result<nullptr_t> ans = SL_RESULT_OK;
++        Result<std::nullptr_t> ans = SL_RESULT_OK;
+ 
+         if (!channel->open()) {
+             ans= RESULT_OPERATION_FAIL;
+@@ -409,4 +409,4 @@ sl_result AsyncTransceiver::_proc_decoderThread()
+ }
+ 
+ 
+-}}
+\ No newline at end of file
++}}

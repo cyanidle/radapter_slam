@@ -22,8 +22,52 @@ create_radapter_plugin(radapter_slam
     FILES src/radapter_slam.cpp
 )
 
+create_radapter_plugin(radapter_rplidar
+    FILES src/radapter_rplidar.cpp
+)
+
 set(karto_dir 3rdparty/karto_sdk/)
 set(slam_dir 3rdparty/slam_toolbox/)
+
+include_directories(include)
+
+###
+
+CPMAddPackage(NAME rplidar-sdk
+    GITHUB_REPOSITORY Slamtec/rplidar_sdk
+    GIT_TAG 99478e5
+    DOWNLOAD_ONLY YES
+    GIT_SHALLOW YES
+    PATCHES
+        ./rplidar.patch
+)
+
+set(lidar_src_dir ${rplidar-sdk_SOURCE_DIR}/sdk/src/)
+
+set(rplidar_src
+    ${lidar_src_dir}/sl_lidar_driver.cpp
+    ${lidar_src_dir}/hal/thread.cpp
+    ${lidar_src_dir}/sl_crc.cpp
+    ${lidar_src_dir}/sl_serial_channel.cpp
+    ${lidar_src_dir}/sl_lidarprotocol_codec.cpp
+    ${lidar_src_dir}/sl_async_transceiver.cpp
+    ${lidar_src_dir}/sl_tcp_channel.cpp
+    ${lidar_src_dir}/sl_udp_channel.cpp
+)
+
+if(LINUX)
+    list(APPEND rplidar_src
+        ${lidar_src_dir}/arch/linux/net_serial.cpp
+        ${lidar_src_dir}/arch/linux/net_socket.cpp
+        ${lidar_src_dir}/arch/linux/timer.cpp
+    )
+endif()
+
+add_library(rplidar-sdk STATIC ${rplidar_src})
+target_include_directories(rplidar-sdk PRIVATE ${lidar_src_dir})
+target_include_directories(rplidar-sdk PUBLIC ${rplidar-sdk_SOURCE_DIR}/sdk/include)
+
+target_link_libraries(radapter_rplidar PRIVATE rplidar-sdk)
 
 ###
 
@@ -61,6 +105,7 @@ add_library(toolbox_common STATIC
     ${slam_dir}/src/laser_utils.cpp
     ${slam_dir}/src/slam_mapper.cpp)
 
+target_include_directories(toolbox_common PUBLIC ${slam_dir})
 
 target_link_libraries(toolbox_common PUBLIC
     kartoSlamToolbox

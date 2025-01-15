@@ -21,7 +21,6 @@
 #include <string>
 #include <chrono>
 #include "slam_toolbox/slam_toolbox_common.hpp"
-#include "rclcpp/rclcpp/qos.hpp"
 #include "slam_toolbox/serialization.hpp"
 
 namespace slam_toolbox
